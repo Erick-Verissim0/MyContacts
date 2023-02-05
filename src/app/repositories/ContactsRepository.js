@@ -64,9 +64,9 @@ class ContactsRepository {
         phone,
         category_id,
       };
-      contacts = contacts.map((contact) => 
+      contacts = contacts.map((contact) =>
         contact.id === id ? updatedContact : contact
-    );
+      );
 
       resolve(updatedContact);
     });
