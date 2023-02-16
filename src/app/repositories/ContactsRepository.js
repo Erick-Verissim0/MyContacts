@@ -2,13 +2,23 @@ const db = require('../../database');
 
 class ContactsRepository {
   async findAll(orderBy = 'ASC') {
-    const direction = orderBy.toUpperCase() === 'DESC' ? "DESC" : "ASC"
-    const rows = await db.query(`SELECT * FROM contacts ORDER BY name ${direction}`);
+    const direction = orderBy.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
+    const rows = await db.query(`
+    SELECT contacts.*, categories.name AS category_name FROM contacts 
+    LEFT JOIN categories ON categories.id = 
+    contacts.category_id ORDER BY contacts.name ${direction}`);
     return rows;
   }
 
   async findById(id) {
-    const [row] = await db.query('SELECT * FROM contacts WHERE id = $1', [id])
+    const [row] = await db.query(
+      `
+    SELECT contacts.*, categories.name AS category_name 
+    FROM contacts LEFT JOIN categories ON categories.id = 
+    contacts.category_id WHERE contacts.id = $1
+    `,
+      [id]
+    );
     return row;
   }
 
@@ -18,7 +28,9 @@ class ContactsRepository {
   }
 
   async findByEmail(email) {
-    const [row] = await db.query('SELECT * FROM contacts WHERE email = $1', [email])
+    const [row] = await db.query('SELECT * FROM contacts WHERE email = $1', [
+      email,
+    ]);
     return row;
   }
 
@@ -29,15 +41,19 @@ class ContactsRepository {
     VALUES($1, $2, $3, $4)
     RETURNING *`,
       // estou me referindo ao dolar 1 como name e assim vai... Poderia ser utilizado uma interpolação de dados, mas ficaria sucetivo à uma SQL Injection
-      [name, email, phone, category_id]);
+      [name, email, phone, category_id]
+    );
     return row;
   }
 
   async update(id, { name, email, phone, category_id }) {
-    const [row] = await db.query(`
+    const [row] = await db.query(
+      `
     UPDATE contacts SET name = $1, email = $2, phone = $3, category_id = $4 
     WHERE id = $5 
-    RETURNING *`, [name, email, phone, category_id, id]);
+    RETURNING *`,
+      [name, email, phone, category_id, id]
+    );
     return row;
   }
 }
