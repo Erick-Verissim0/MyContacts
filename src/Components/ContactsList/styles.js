@@ -10,7 +10,6 @@ export const Header = styled.header`
   justify-content: space-between;
 
   strong {
-    color: #222;
     font-size: 24px;
   }
 
@@ -26,6 +25,81 @@ export const Header = styled.header`
     &:hover {
       background-color: ${({ theme }) => theme.colors.primary.main};
       color: #fff;
+    }
+  }
+`;
+
+export const ListContainer = styled.div`
+  margin-top: 24px;
+
+  img {
+    height: 20px;
+    width: 16px;
+  }
+
+  header {
+    margin-bottom: 8px;
+
+    button {
+      background: transparent;
+      border: none;
+      display: flex;
+      align-items: center;
+
+      span {
+        margin-right: 8px;
+        font-weight: bold;
+        color: ${({ theme }) => theme.colors.primary.main};
+      }
+    }
+  }
+`;
+
+export const Card = styled.div`
+  background: #fff;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.04);
+  padding: 16px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  & + & {
+    // Estou me referindo a todo container que vinher depois do primeiro
+    margin-top: 16px;
+  }
+
+  .infor {
+    .contact-name {
+      display: flex;
+      align-items: center;
+
+      small {
+        background: ${({ theme }) => theme.colors.primary.lighter};
+        color: ${({ theme }) => theme.colors.primary.main};
+        font-weight: bold;
+        text-transform: uppercase;
+        padding: 4px;
+        border-radius: 4px;
+        margin-left: 8px;
+      }
+    }
+    span {
+      display: block;
+      font-size: 14px;
+      color: ${({ theme }) => theme.colors.gray[200]};
+      // Sempre que se referir a um nome que seja número, tem que colorar o colchetes
+    }
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+
+    button {
+      background: transparent;
+      border: none;
+      margin-left: 8px;
     }
   }
 `;
