@@ -5,7 +5,6 @@ import { BrowserRouter } from 'react-router-dom';
 import GlobalStyles from '../../assets/styles/global';
 import defaultTheme from '../../assets/styles/themes/default';
 import Header from '../Header/index';
-import ContactsList from '../ContactsList';
 import Routes from '../../Routes';
 
 function App() {
