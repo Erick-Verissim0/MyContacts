@@ -15,13 +15,16 @@ import trash from '../../assets/images/icons/trash.png';
 export default function Home() {
   return (
     <Container>
+      
       <InputSearchContainer>
         <input type="text" placeholder="Search contact..." />
       </InputSearchContainer>
+
       <Header>
         <strong>3 Contacts</strong>
         <a href="/new">New Contact</a>
       </Header>
+
       <ListContainer>
         <header>
           <button type="button">
@@ -51,6 +54,7 @@ export default function Home() {
           </div>
         </Card>
       </ListContainer>
+      
     </Container>
   );
 }

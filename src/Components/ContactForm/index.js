@@ -4,16 +4,32 @@ import Input from '../Input';
 import Select from '../Select';
 import Button from '../Button';
 import PropTypes from 'prop-types';
+import { useState, useRef } from 'react';
 
 export default function ContactForm({ buttonLabel }) {
+  const [name, setName] = useState('');
+  const emailInput = useRef(null);
+
+  function handleClick() {
+    console.log(emailInput.current.value);
+  }
+
   return (
     <Form>
+      <button type="button" onClick={handleClick}>
+        Loggin emailInput
+      </button>
+
       <FormGroup>
-        <Input placeholder="Name" />
+        <Input
+          value={name}
+          placeholder="Name"
+          onChange={(event) => setName(event.target.value)}
+        />
       </FormGroup>
 
       <FormGroup>
-        <Input placeholder="Email" />
+        <Input placeholder="Email" ref={emailInput} />
       </FormGroup>
 
       <FormGroup>
