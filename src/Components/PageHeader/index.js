@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import arrow from '../../assets/images/icons/arrow.png';
@@ -7,10 +6,10 @@ import { Container } from './styles';
 export default function PageHeader({ title }) {
   return (
     <Container>
-      <Link to="/">
+      <a href="/">
         <img src={arrow} alt="Back" />
         <span>Back</span>
-      </Link>
+      </a>
       <h1>{title}</h1>
     </Container>
   );

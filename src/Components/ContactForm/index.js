@@ -1,33 +1,41 @@
+// React Modules
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 
-import { Form, ButtonContainer } from './styles';
-
-import isEmailValid from '../../utils/isEmailValid';
+// Components
+import Button from '../Button';
 import FormGroup from '../FormGroup';
 import Input from '../Input';
 import Select from '../Select';
-import Button from '../Button';
+
+// Custom Hooks
+import useErrors from '../../hooks/UseErrors';
+
+// Utilitarys
+import formatPhone from '../../utils/formatPhone';
+import isEmailValid from '../../utils/isEmailValid';
+
+// Styles
+import { Form, ButtonContainer } from './styles';
 
 export default function ContactForm({ buttonLabel }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [category, setCategory] = useState('');
-  const [errors, setErrors] = useState([]);
+
+  const { errors, setError, removeError, getErrorMessageByFildName } =
+    useErrors();
+
+  const isFormValid = name && errors.length === 0;
 
   function handleNameChange(event) {
     setName(event.target.value);
 
     if (!event.target.value) {
-      setErrors((prevState) => [
-        ...prevState,
-        { field: 'name', message: 'Name is required.' },
-      ]);
+      setError({ field: 'name', message: 'Name is required.' });
     } else {
-      setErrors((prevState) =>
-        prevState.filter((error) => error.field !== 'name')
-      );
+      removeError('name');
     }
   }
 
@@ -35,37 +43,24 @@ export default function ContactForm({ buttonLabel }) {
     setEmail(event.target.value);
 
     if (event.target.value && !isEmailValid(event.target.value)) {
-      const errorAlreadyExists = errors.find(
-        (error) => error.field === 'email'
-      );
-
-      if (errorAlreadyExists) {
-        return;
-      }
-
-      setErrors((prevState) => [
-        ...prevState,
-        { field: 'email', message: 'Email is required.' },
-      ]);
+      setError({ field: 'email', message: 'Email is required.' });
     } else {
-      setErrors((prevState) =>
-        prevState.filter((error) => error.field !== 'email')
-      );
+      removeError('email');
     }
   }
 
-  function getErrorMessageByFildName(fieldName) {
-    return errors.find((error) => error.field === fieldName)?.message;
+  function handlePhoneChange(event) {
+    setPhone(formatPhone(event.target.value));
   }
 
   function handleSubmit(event) {
     event.preventDefault();
 
-    console.log({ name, email, phone, category });
+    console.log({ name, email, phone: phone.replace(/\D/g, ''), category });
   }
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form onSubmit={handleSubmit} noValidate>
       <FormGroup error={getErrorMessageByFildName('name')}>
         <Input
           error={getErrorMessageByFildName('name')}
@@ -77,6 +72,7 @@ export default function ContactForm({ buttonLabel }) {
 
       <FormGroup error={getErrorMessageByFildName('email')}>
         <Input
+          type="email"
           error={getErrorMessageByFildName('email')}
           placeholder="E-mail"
           value={email}
@@ -86,9 +82,10 @@ export default function ContactForm({ buttonLabel }) {
 
       <FormGroup>
         <Input
+          maxLength="15"
           placeholder="Phone"
           value={phone}
-          onChange={(event) => setPhone(event.target.value)}
+          onChange={handlePhoneChange}
         />
       </FormGroup>
 
@@ -102,7 +99,9 @@ export default function ContactForm({ buttonLabel }) {
       </Select>
 
       <ButtonContainer>
-        <Button type="submit">{buttonLabel}</Button>
+        <Button disabled={!isFormValid} type="submit">
+          {buttonLabel}
+        </Button>
       </ButtonContainer>
     </Form>
   );
