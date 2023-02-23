@@ -15,7 +15,6 @@ import trash from '../../assets/images/icons/trash.png';
 export default function Home() {
   return (
     <Container>
-      
       <InputSearchContainer>
         <input type="text" placeholder="Search contact..." />
       </InputSearchContainer>
@@ -54,7 +53,19 @@ export default function Home() {
           </div>
         </Card>
       </ListContainer>
-      
     </Container>
   );
 }
+
+fetch('http://localhost:3001/contacts', {
+  method: 'DELETE',
+  headers: new Headers({
+    'X-App-ID': '123',
+  }),
+})
+  .then((resp) => {
+    console.log('Response', resp);
+  })
+  .catch((error) => {
+    console.log('Error', error);
+  });
