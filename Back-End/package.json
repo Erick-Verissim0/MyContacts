@@ -1,0 +1,19 @@
+{
+  "name": "mycontacts",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/Erick-Verissim0/MyContacts.git",
+  "author": "Erick <estudodoerick@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "npx nodemon api_src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-async-errors": "^3.1.1",
+    "pg": "^8.9.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
