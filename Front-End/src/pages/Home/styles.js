@@ -50,29 +50,34 @@ export const Header = styled.header`
   }
 `;
 
-export const ListContainer = styled.div`
+export const ListHeader = styled.header`
+  margin-bottom: 8px;
   margin-top: 24px;
 
+  button {
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+
+    span {
+      margin-right: 8px;
+      font-weight: bold;
+      color: ${({ theme }) => theme.colors.primary.main};
+    }
+  }
+
+  img {
+    transform: ${({ orderBy }) =>
+      orderBy === 'asc' ? 'rotate(180deg)' : 'rotate(360deg)'};
+    transition: transform 0.2s ease-in;
+  }
+`;
+
+export const LenghtImg = styled.div`
   img {
     height: 20px;
     width: 16px;
-  }
-
-  header {
-    margin-bottom: 8px;
-
-    button {
-      background: transparent;
-      border: none;
-      display: flex;
-      align-items: center;
-
-      span {
-        margin-right: 8px;
-        font-weight: bold;
-        color: ${({ theme }) => theme.colors.primary.main};
-      }
-    }
   }
 `;
 
@@ -122,5 +127,9 @@ export const Card = styled.div`
       border: none;
       margin-left: 8px;
     }
+  }
+
+  :last-child {
+    margin-bottom: 75px;
   }
 `;

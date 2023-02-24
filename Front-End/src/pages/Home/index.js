@@ -1,11 +1,12 @@
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 
 import {
   Container,
   InputSearchContainer,
   Header,
-  ListContainer,
+  ListHeader,
   Card,
+  LenghtImg,
 } from '../../pages/Home/styles';
 
 import arrow from '../../assets/images/icons/arrow.png';
@@ -13,6 +14,24 @@ import edit from '../../assets/images/icons/edit.png';
 import trash from '../../assets/images/icons/trash.png';
 
 export default function Home() {
+  const [contacts, setContacts] = useState([]);
+  const [orderBy, setOrderBy] = useState('asc');
+
+  useEffect(() => {
+    fetch(`http://localhost:3001/contacts?orderBy=${orderBy}`)
+      .then(async (resp) => {
+        const json = await resp.json();
+        setContacts(json);
+      })
+      .catch((error) => {
+        console.log('Error', error);
+      });
+  }, [orderBy]);
+
+  function handleTogglerOrderBy() {
+    setOrderBy((prevState) => (prevState === 'asc' ? 'desc' : 'asc'));
+  }
+
   return (
     <Container>
       <InputSearchContainer>
@@ -20,52 +39,51 @@ export default function Home() {
       </InputSearchContainer>
 
       <Header>
-        <strong>3 Contacts</strong>
+        <strong>
+          {contacts.length} {contacts.length == 1 ? 'Contact' : 'Contacts'}
+        </strong>
         <a href="/new">New Contact</a>
       </Header>
 
-      <ListContainer>
-        <header>
-          <button type="button">
-            <span>Name</span>
-            <img src={arrow} alt="Arrow" />
-          </button>
-        </header>
-        <Card>
+      <ListHeader orderBy={orderBy}>
+        <button type="button" onClick={handleTogglerOrderBy}>
+          <span>Name</span>
+          <LenghtImg>
+            <img className="arrow" src={arrow} alt="Arrow" />
+          </LenghtImg>
+        </button>
+      </ListHeader>
+
+      {contacts.map((contact) => (
+        <Card key={contact.id}>
           <div className="info">
             <div className="contact-name">
-              <strong>Erick Veríssimo</strong>
-              <small>Instagram</small>
+              <strong> {contact.name} </strong>
+
+              {contact.category_name && (
+                <small> {contact.category_name} </small>
+              )}
             </div>
-            <span>erickverissimo.s.a.al@gmail.com</span>
-            <span>(82) 99644-3336</span>
+            <span> {contact.email} </span>
+            <span> {contact.phone} </span>
           </div>
 
           <div className="actions">
-            <a href="/edit/123">
-              <img src={edit} alt="Edit" />
+            <a href={`/edit/${contact.id}`}>
+              <LenghtImg>
+                <img src={edit} alt="Edit" />
+              </LenghtImg>
             </a>
             <button type="button">
               <a href="/">
-                <img src={trash} alt="Button" />
+                <LenghtImg>
+                  <img src={trash} alt="Button" />
+                </LenghtImg>
               </a>
             </button>
           </div>
         </Card>
-      </ListContainer>
+      ))}
     </Container>
   );
 }
-
-fetch('http://localhost:3001/contacts', {
-  method: 'DELETE',
-  headers: new Headers({
-    'X-App-ID': '123',
-  }),
-})
-  .then((resp) => {
-    console.log('Response', resp);
-  })
-  .catch((error) => {
-    console.log('Error', error);
-  });
