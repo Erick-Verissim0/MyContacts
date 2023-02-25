@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 import {
   Container,
@@ -12,49 +12,80 @@ import {
 import arrow from '../../assets/images/icons/arrow.png';
 import edit from '../../assets/images/icons/edit.png';
 import trash from '../../assets/images/icons/trash.png';
+import Loader from '../../Components/Loader';
+import ContactService from '../../services/ContactService';
 
 export default function Home() {
   const [contacts, setContacts] = useState([]);
   const [orderBy, setOrderBy] = useState('asc');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+
+  const filteredContacts = useMemo(
+    () =>
+      contacts.filter((contact) =>
+        contact.name.toLowerCase().includes(searchTerm.toLocaleLowerCase())
+      ),
+    [contacts, searchTerm]
+  );
 
   useEffect(() => {
-    fetch(`http://localhost:3001/contacts?orderBy=${orderBy}`)
-      .then(async (resp) => {
-        const json = await resp.json();
-        setContacts(json);
-      })
-      .catch((error) => {
+    async function loadContact() {
+      try {
+        setIsLoading(true);
+
+        const contactsList = await ContactService.listContacts(orderBy);
+
+        setContacts(contactsList);
+      } catch (error) {
         console.log('Error', error);
-      });
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadContact();
   }, [orderBy]);
 
   function handleTogglerOrderBy() {
     setOrderBy((prevState) => (prevState === 'asc' ? 'desc' : 'asc'));
   }
 
+  function handleChangeSearchTerm(event) {
+    setSearchTerm(event.target.value);
+  }
+
   return (
     <Container>
+      <Loader isLoading={isLoading} />
       <InputSearchContainer>
-        <input type="text" placeholder="Search contact..." />
+        <input
+          value={searchTerm}
+          onChange={handleChangeSearchTerm}
+          type="text"
+          placeholder="Search contact..."
+        />
       </InputSearchContainer>
 
       <Header>
         <strong>
-          {contacts.length} {contacts.length == 1 ? 'Contact' : 'Contacts'}
+          {filteredContacts.length}{' '}
+          {filteredContacts.length == 1 ? 'Contact' : 'Contacts'}
         </strong>
         <a href="/new">New Contact</a>
       </Header>
 
-      <ListHeader orderBy={orderBy}>
-        <button type="button" onClick={handleTogglerOrderBy}>
-          <span>Name</span>
-          <LenghtImg>
-            <img className="arrow" src={arrow} alt="Arrow" />
-          </LenghtImg>
-        </button>
-      </ListHeader>
+      {filteredContacts.length > 0 && (
+        <ListHeader orderBy={orderBy}>
+          <button type="button" onClick={handleTogglerOrderBy}>
+            <span>Name</span>
+            <LenghtImg>
+              <img className="arrow" src={arrow} alt="Arrow" />
+            </LenghtImg>
+          </button>
+        </ListHeader>
+      )}
 
-      {contacts.map((contact) => (
+      {filteredContacts.map((contact) => (
         <Card key={contact.id}>
           <div className="info">
             <div className="contact-name">
