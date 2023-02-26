@@ -1,4 +1,5 @@
 import delay from './delay';
+import APIError from '../errors/apiError';
 
 class HttpClient {
   constructor(baseURL) {
@@ -22,9 +23,7 @@ class HttpClient {
       return body;
     }
 
-    throw new Error(
-      body?.error || `${response.status} - ${response.statusText}`
-    ); // a ? serve para verificar se o body é null ou undefined
+    throw new APIError(response, body);
   }
 }
 export default HttpClient;

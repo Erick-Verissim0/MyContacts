@@ -8,6 +8,7 @@ export default {
       dark: '#3346f0',
     },
     gray: {
+      100: '#e5e5e5',
       200: '#bcbcbc', 
       900: '#222222',
     },
